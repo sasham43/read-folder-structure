@@ -14,36 +14,27 @@ console.log('fileStructure', fileStructure);
 
 function readFolder(path, currentObject){
 
-  //console.log('currentObject', fileStructure);
   var currentFolderContents = fs.readdirSync(path);
-  //console.log('currentFolderContents:', currentFolderContents);
 
   currentFolderContents.map(function(x){
-    //console.log('x:', x);
-    var xPath = path + '/' + x;
-    //console.log('xPath:', xPath);
-    var isFolder = fs.lstatSync(xPath).isDirectory();
-    //console.log('isFolder:', isFolder);
-    if(!isFolder){
-      console.log('x:', x);
-      currentObject.files.push(x);
-    } else {
-      var tempFolder = {
-        name: x,
-        files: [],
-        folders: []
-      };
+    if(x !== '.git'){
+      var xPath = path + '/' + x;
+      var isFolder = fs.lstatSync(xPath).isDirectory();
+      if(!isFolder){
+        currentObject.files.push(x);
+      } else {
+        var tempFolder = {
+          name: x,
+          files: [],
+          folders: []
+        };
+        currentObject.folders.push(tempFolder);
 
-      currentObject.folders.push(tempFolder);
-      //var newPath = path + '/' + x;
-      //console.log('currentObject.folders:', currentObject.folders);
-      currentObject.folders.map(function(y){
-        console.log('y:', y);
-        var yPath = path + '/' + y.name;
-        readFolder(yPath, y);
-      });
-      //readFolder(newPath, currentObject.folders[x]);
+        currentObject.folders.map(function(y){
+          var yPath = path + '/' + y.name;
+          readFolder(yPath, y);
+        });
+      }
     }
   });
-  console.log('currentObject:', currentObject);
 }
